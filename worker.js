@@ -16,7 +16,6 @@ function safeAtob(str) {
   try {
     return atob(str);
   } catch (e) {
-    // اصلاح پدینگ بیس ۶۴ در صورت نیاز
     try {
       return atob(str.padEnd(str.length + (4 - (str.length % 4)) % 4, '='));
     } catch (err) {
@@ -253,13 +252,13 @@ function getFullClientInterface() {
                     <span>نسخه ابری ایمن (Cloudflare Worker)</span>
                 </div>
             </div>
-            <div style="font-size: 12.5px; color: var(--text-secondary);">Core v3.2.1</div>
+            <div style="font-size: 12.5px; color: var(--text-secondary);">Core v3.2.2</div>
         </header>
 
         <div class="status-panel">
             <div class="live-indicator">
                 <span class="pulse-dot"></span>
-                <span>وضعیت موتور هسته: <strong>پایدار و ایمن</strong></span>
+                <span>وضعیت موتور هسته: <strong>پایدار و آماده بیلد</strong></span>
             </div>
             <div id="statistics-badge" style="color: var(--text-secondary);">کل بررسی‌شده: ۰ | تمیز: ۰</div>
         </div>
@@ -283,7 +282,7 @@ function getFullClientInterface() {
 
         <div class="card-box" style="margin-top: 22px;">
             <label>لاگ‌های زنده سیستم:</label>
-            <div id="terminal-console" class="terminal-screen">> سیستم ورکر به‌روزرسانی شد. آماده دریافت دستور.</div>
+            <div id="terminal-console" class="terminal-screen">> سیستم ورکر آماده بیلد و دیپلوی شد.</div>
         </div>
 
         <div class="card-box" style="margin-top: 22px;">
@@ -306,7 +305,7 @@ function getFullClientInterface() {
             const cidrTextVal = document.getElementById('cidr-textarea').value.trim();
             const autoFetchVal = document.getElementById('auto-fetch-checkbox').checked;
             
-            const cidrListParsed = cidrTextVal ? cidrTextVal.split('\\n').map(s => s.trim()).filter(Boolean) : [];
+            const cidrListParsed = cidrTextVal ? cidrTextVal.split('\\n').map(function(s) { return s.trim(); }).filter(Boolean) : [];
             const gridContainer = document.getElementById('results-grid-container');
 
             gridContainer.innerHTML = '<div style="color: var(--accent-main); font-size: 14px;">در حال پردازش و اسکن موازی...</div>';
@@ -328,16 +327,16 @@ function getFullClientInterface() {
                     document.getElementById('statistics-badge').innerText = 'کل بررسی‌شده: ' + responseData.totalScannedCount + ' | تمیز: ' + responseData.results.length;
                     
                     gridContainer.innerHTML = '';
-                    responseData.results.forEach(resItem => {
-                        gridContainer.innerHTML += `
-                            <div class="result-card">
-                                <div><span class="version-badge">${resItem.type}</span></div>
-                                <div class="ip-header">${resItem.ip}</div>
-                                <div style="font-size: 11.5px; color: var(--text-secondary); margin-bottom: 8px;">SNI: ${resItem.sni}</div>
-                                <div class="metric-line"><span>پینگ: ${resItem.tcpPing}ms</span><span>TLS: ${resItem.tlsHandshake}ms</span></div>
-                                <div class="metric-line"><span>HTTP: ${resItem.httpPing}ms</span><span>جیتر: ${resItem.jitter}ms</span></div>
-                            </div>
-                        `;
+                    responseData.results.forEach(function(resItem) {
+                        var cardHTML = '';
+                        cardHTML += '<div class="result-card">';
+                        cardHTML += '<div><span class="version-badge">' + resItem.type + '</span></div>';
+                        cardHTML += '<div class="ip-header">' + resItem.ip + '</div>';
+                        cardHTML += '<div style="font-size: 11.5px; color: var(--text-secondary); margin-bottom: 8px;">SNI: ' + resItem.sni + '</div>';
+                        cardHTML += '<div class="metric-line"><span>پینگ: ' + resItem.tcpPing + 'ms</span><span>TLS: ' + resItem.tlsHandshake + 'ms</span></div>';
+                        cardHTML += '<div class="metric-line"><span>HTTP: ' + resItem.httpPing + 'ms</span><span>جیتر: ' + resItem.jitter + 'ms</span></div>';
+                        cardHTML += '</div>';
+                        gridContainer.innerHTML += cardHTML;
                     });
                 } else {
                     pushLog('خطا در پردازش: ' + (responseData.error || 'نامشخص'));
